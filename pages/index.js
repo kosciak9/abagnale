@@ -23,21 +23,21 @@ export default function Home() {
   const columns = useMemo(
     () => [
       {
-        Header: "Imię i nazwisko",
-        accessor: "name", // accessor is the "key" in the data
+        Header: "Nazwa przedsiębiorstwa",
+        accessor: "company_name", // accessor is the "key" in the data
       },
 
       {
-        Header: "Email",
-        accessor: "email",
+        Header: "Jurysdykcja",
+        accessor: "jurisdiction",
       },
       {
-        Header: "Address",
-        accessor: "address",
+        Header: "Data zgłoszenia",
+        accessor: "report_date",
       },
       {
-        Header: "Phone number",
-        accessor: "phoneNo",
+        Header: "Odnośnik do zgłoszenia",
+        accessor: "report_url",
       },
     ],
 

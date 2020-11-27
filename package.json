@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.0.0",
     "@xstate/fsm": "^1.5.2",
     "@xstate/react": "^1.0.3",
+    "csv-parse": "^4.14.1",
     "faker": "^5.1.0",
     "formik": "^2.2.5",
     "framer-motion": "^2.9.4",
