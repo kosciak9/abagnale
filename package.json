@@ -8,12 +8,18 @@
     "start": "next start"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.0.1",
+    "@emotion/react": "^11.1.1",
+    "@emotion/styled": "^11.0.0",
     "@xstate/fsm": "^1.5.2",
     "@xstate/react": "^1.0.3",
+    "faker": "^5.1.0",
     "formik": "^2.2.5",
+    "framer-motion": "^2.9.4",
     "next": "10.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-table": "^7.6.2",
     "wretch": "^1.7.4"
   }
 }
