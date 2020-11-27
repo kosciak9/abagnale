@@ -12,17 +12,6 @@ module.exports = (req, res) => {
     skip_empty_lines: true,
   });
 
-  // const results = [];
-  // for (let i = 0; i < 300; i++) {
-  //   results.push({
-  //     id: faker.random.uuid(),
-  //     name: faker.name.firstName() + " " + faker.name.lastName(),
-  //     email: faker.internet.email(),
-  //     phoneNo: faker.phone.phoneNumber(),
-  //     address: faker.address.streetAddress(),
-  //   });
-  // }
-
   res.statusCode = 200;
   res.json({ results });
 };
