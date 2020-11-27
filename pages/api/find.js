@@ -5,7 +5,7 @@ import { join } from "path";
 import parse from "csv-parse/lib/sync";
 
 module.exports = (req, res) => {
-  const input = readFileSync(join("scraper", "outputs", "iosco.csv")).toString();
+  const input = readFileSync(join("pages", "api", "iosco.csv")).toString();
 
   const results = parse(input, {
     columns: true,
