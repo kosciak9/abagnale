@@ -1,15 +1,18 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import * as faker from "faker";
 
 export default (req, res) => {
   res.statusCode = 200;
-  res.json({
-    results: [
-      {
-        id: "1",
-        name: "John Doe",
-        phoneNo: "+48423423423",
-        address: "ul. Karmelicka 12, 4/95, 30-220",
-      },
-    ],
-  });
+  const results = [];
+  for (let i = 0; i < 300; i++) {
+    results.push({
+      id: faker.random.uuid(),
+      name: faker.name.firstName() + " " + faker.name.lastName(),
+      email: faker.internet.email(),
+      phoneNo: faker.phone.phoneNumber(),
+      address: faker.address.streetAddress(),
+    });
+  }
+
+  res.json({ results });
 };
