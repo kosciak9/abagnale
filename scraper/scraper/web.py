@@ -1,6 +1,4 @@
 from functools import reduce
-from requests.models import MissingSchema
-from requests.sessions import InvalidSchema
 from scraper.site import Site
 
 
@@ -16,15 +14,8 @@ class Web:
             return cls(sites=[])
         if verbose:
             print(f'Fetching {url}')
-        try:
-            top_level_site = Site.from_url(url)
-        except Exception as exception:
-            if not(
-                isinstance(exception, ConnectionError)
-                or isinstance(exception,MissingSchema)
-                or isinstance(exception, InvalidSchema)
-            ):
-                raise exception
+        top_level_site = Site.from_url(url)
+        if top_level_site is None:
             return cls(sites=[])
         return cls.merge(
             cls(sites=[top_level_site]),
