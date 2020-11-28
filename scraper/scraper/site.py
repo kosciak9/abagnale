@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import urljoin
-import re
 from bs4 import BeautifulSoup
+from scraper.url import base_url, find_urls
 
 
 class Site:
@@ -28,20 +28,22 @@ class Site:
     @property
     def links(self):
         '''Returns a list of URLs that this website links to'''
-        # TODO: use regex to match things that look like urls (even if they're not linked)
-        links = frozenset(
+        links = [
             urljoin(self.url, link['href'])
             for link in self.soup.body.find_all('a', href=True)
-        )
-        url_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-        look_like_urls = frozenset(x[0] for x in re.findall(url_regex, self.soup.body.get_text())) # TODO: add http:// etc to these links
-        return links.union(look_like_urls)
+        ]
+        look_like_urls = find_urls(self.soup.body.get_text())
+        # the below guarantees that for every base url, only one corresponding actual url is returned
+        return list({
+            base_url(url): url
+            for url in look_like_urls + links
+        }.values())
     
 
     def __hash__(self):
         # using only html would cause sites with the same html to be de-duplicated
         # then, when other sites link to them, they would not be found in the database
-        return hash(self.url)
+        return hash(base_url(self.url))
     
 
     def __repr__(self):

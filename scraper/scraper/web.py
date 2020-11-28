@@ -1,18 +1,12 @@
 from functools import reduce
 from tqdm.auto import tqdm
+from scraper.url import base_url
 from scraper.site import Site
 
 
 class Web:
     def __init__(self, sites):
-        self.sites = (
-            sites
-            if isinstance(sites, dict)
-            else {
-                site.url: site
-                for site in sites
-            }
-        )
+        self.sites = frozenset(sites)
     
 
     @classmethod
@@ -38,14 +32,17 @@ class Web:
     def merge(cls, *args):
         '''Merge multiple webs, making sure not to duplicate sites'''
         return cls(sites=reduce(
-            lambda a, b: a.union(b.values()),
+            lambda a, b: a.union(b),
             (arg.sites for arg in args),
-            set()
+            frozenset()
         ))
     
 
     def __getitem__(self, url):
-        return self.sites[url]
+        for site in self.sites:
+            if base_url(site.url) == base_url(url):
+                return site
+        raise KeyError(f'Base url {base_url(url)} of {url} not present in {self}')
     
 
     def __repr__(self):
