@@ -63,7 +63,16 @@ class Web:
     
 
     def to_json(self):
-        return [site.to_json() for site in self.sites]
+        # sort by hash to guarantee that the same web will always give the same json
+        return [site.to_json() for site in sorted(self.sites, key=hash)]
+    
+
+    def __len__(self):
+        return len(self.sites)
+    
+
+    def __iter__(self):
+        return iter(self.sites)
     
 
     def __getitem__(self, url):
