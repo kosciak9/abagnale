@@ -12,7 +12,10 @@ class Web:
         '''Follow the URL, all URLs found on the URL, etc - until the depth limit is reached'''
         if depth == 0:
             return cls(sites=[])
-        top_level_site = Site.from_url(url) # TODO: handle errors here
+        try:
+            top_level_site = Site.from_url(url)
+        except ConnectionError:
+            return cls(sites=[])
         return cls.merge(
             cls(sites=[top_level_site]),
             *[

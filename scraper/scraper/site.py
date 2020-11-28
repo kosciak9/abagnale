@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 
@@ -22,7 +23,7 @@ class Site:
         '''Returns a list of URLs that this website links to'''
         # TODO: use regex to match things that look like urls (even if they're not linked)
         return [
-            link['href']
+            urljoin(self.url, link['href'])
             for link in self.soup.body.find_all('a', href=True)
         ]
     
