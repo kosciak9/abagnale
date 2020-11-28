@@ -4,13 +4,14 @@ from tqdm.auto import tqdm
 from scraper.url import domain
 
 
+# TODO: should extract entity objects, so that case/url details become unimportant
 def extract_entities(site):
-    return frozenset(
+    return list(set(
         extract_emails(site)
         + extract_nlp(site)
         + [domain(site.url)]
         + ([site.title] if site.title is not None else [])
-    )
+    ))
 
 
 email_regex = re.compile(r'[\w\.-]+@[\w\.-]+\.\w+')
