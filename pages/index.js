@@ -6,6 +6,7 @@ import wretch from "wretch";
 import { useState, useMemo } from "react";
 import { Box, Button, Heading, Input, Text } from "@chakra-ui/react";
 import { useTable } from "react-table";
+import { toPairs } from "lodash";
 
 const toggleMachine = createMachine({
   id: "form",
@@ -80,7 +81,7 @@ export default function Home() {
               .post(values)
               .json()
               .then((response) => {
-                setData(response.results);
+                setData(toPairs(response.results).map(([_v, v]) => v));
                 send({ type: "RESOLVED" });
               })
               .catch((error) => send({ type: "REJECT" }));
@@ -112,11 +113,6 @@ export default function Home() {
           </Form>
         </Formik>
       </Box>
-      {/* <Box as="main" p={4}>
-        {data.map((row) => (
-          <div key={row.id}>{JSON.stringify(row, null, 2)}</div>
-        ))}
-      </Box> */}
 
       <Box as="main" p={8}>
         <Box as="table" {...getTableProps()} width="100%">
