@@ -7,4 +7,4 @@ from pathlib import Path
 @app.route('/<path:path>')
 def catch_all(path):
     csv = pd.read_csv(Path(__file__).parent.parent / "scraper/outputs/iosco.csv")
-    return jsonify(csv)
+    return jsonify(csv.to_dict())
