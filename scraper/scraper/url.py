@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 def domain(url):
     '''Turn http://abc.xyz/cool?q=10 into abc.xyz'''
-    return urlparse(url).netloc
+    return urlparse(url).netloc.lower()
 
 
 def base_url(url):
@@ -14,7 +14,7 @@ def base_url(url):
     path = parsed.path
     if path.endswith('/'):
         path = path[:-1]
-    return domain + path
+    return (domain + path).lower()
 
 
 def find_urls(text):

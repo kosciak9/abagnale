@@ -1,6 +1,8 @@
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+import langdetect
+from scraper.entities import extract_entities
 from scraper.url import domain, base_url, find_urls
 
 
@@ -49,6 +51,36 @@ class Site:
             for link in self.links
             if domain(link) != domain(self.url)
         ]
+    
+
+    @property
+    def entities(self):
+        '''The set of entities related to the site'''
+        return extract_entities(self)
+    
+
+    @property
+    def title(self):
+        try:
+            return next(self.soup.title.children)
+        except:
+            return None
+    
+
+    @property
+    def text(self):
+        try:
+            return self.soup.body.get_text()
+        except:
+            return ''
+    
+
+    @property
+    def lang(self):
+        try:
+            return langdetect.detect(self.text)
+        except:
+            return None
     
 
     @property
