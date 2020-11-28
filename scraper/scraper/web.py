@@ -14,7 +14,7 @@ class Web:
             return cls(sites=[])
         if verbose:
             print(f'Fetching {url}')
-        top_level_site = Site.from_url(url)
+        top_level_site = Site.from_url(url, ignore_errors=True)
         if top_level_site is None:
             return cls(sites=[])
         return cls.merge(

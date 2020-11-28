@@ -1,6 +1,4 @@
 import requests
-from requests.models import MissingSchema
-from requests.sessions import InvalidSchema
 from urllib.parse import urljoin
 import re
 from bs4 import BeautifulSoup
@@ -16,19 +14,15 @@ class Site:
     @classmethod
     def from_url(cls, url, ignore_errors=False):
         try:
-            return cls(
-                url=url,
-                html=requests.get(url).text
-            )
+            html = requests.get(url).text
         except Exception as exception:
-            if not ignore_errors:
-                raise exception
-            if not any(
-                isinstance(exception, handled_type)
-                for handled_type in [ConnectionError, MissingSchema, InvalidSchema]
-            ):
-                raise exception
-            return None
+            if ignore_errors:
+                return None
+            raise exception
+        return cls(
+            url=url,
+            html=html
+        )
 
 
     @property
