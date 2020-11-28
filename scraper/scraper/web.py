@@ -1,4 +1,6 @@
 from functools import reduce
+import gzip
+import json
 from scraper.site import Site
 from scraper.url import base_url
 from scraper.parallel import parallel_map
@@ -40,6 +42,28 @@ class Web:
             (arg.sites for arg in args),
             frozenset()
         ))
+    
+
+    @classmethod
+    def from_zip(cls, file_path):
+        with gzip.open(file_path, 'rb') as file:
+            json_str = file.read().decode('utf8')
+            return cls.from_json(json.loads(json_str))
+    
+
+    def to_zip(self, file_path):
+        with gzip.open(file_path, 'wb') as file:
+            json_str = json.dumps(self.to_json())
+            file.write(bytes(json_str, encoding='utf8'))
+
+    
+    @classmethod
+    def from_json(cls, json_obj):
+        return cls([Site.from_json(site_json) for site_json in json_obj])
+    
+
+    def to_json(self):
+        return [site.to_json() for site in self.sites]
     
 
     def __getitem__(self, url):

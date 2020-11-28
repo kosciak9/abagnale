@@ -27,6 +27,8 @@ class Site:
     @property
     def links(self):
         '''A list of URLs that this website links to'''
+        if self.soup.body is None:
+            return []
         links = [
             urljoin(self.url, link['href'])
             for link in self.soup.body.find_all('a', href=True)
@@ -52,6 +54,21 @@ class Site:
     @property
     def soup(self):
         return BeautifulSoup(self.html, 'lxml')
+    
+
+    @classmethod
+    def from_json(cls, json_obj):
+        return cls(
+            url=json_obj['url'],
+            html=json_obj['html'],
+        )
+    
+
+    def to_json(self):
+        return dict(
+            url=self.url,
+            html=self.html,
+        )
     
 
     def __hash__(self):
