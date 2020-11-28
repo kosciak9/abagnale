@@ -1,146 +1,125 @@
-import Head from "next/head";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { createMachine } from "@xstate/fsm";
 import { useMachine } from "@xstate/react/lib/fsm";
-import wretch from "wretch";
-import { useState, useMemo } from "react";
-import { Box, Button, Heading, Input, Text } from "@chakra-ui/react";
-import { useTable } from "react-table";
-import { toPairs } from "lodash";
+import { useState } from "react";
+import { FilterForm } from "../components/FilterForm";
+import { FiletypePicker } from "../components/FiletypePicker";
+import { ResultsTable } from "../components/ResultsTable";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+} from "@chakra-ui/react";
+import {
+  IconButton,
+  Heading,
+  Box,
+  Progress,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { ArrowLeftIcon, ArrowRightIcon, HamburgerIcon } from "@chakra-ui/icons";
 
-const toggleMachine = createMachine({
-  id: "form",
-  initial: "display",
+const moneyMachine = createMachine({
+  id: "moneyMachine",
+  initial: "files",
   states: {
-    display: { on: { SUBMIT: "loading" } },
-    loading: { on: { RESOLVED: "display", REJECT: "error" } },
-    error: { on: { RESET: "idle" } },
+    files: { on: { KEYWORDS: "keywords", QUERY: "query", FROM_SCRATCH: "display" } },
+    keywords: { on: { PARSED: "display", ERROR: "error" } },
+    query: { on: { PARSED: "display", ERROR: "error" } },
+    display: { on: { SUBMIT: "loading", IMPORT: "files" } },
+    loading: { on: { RESOLVED: "display", REJECTED: "error" } },
+    error: { on: { CLOSE: "display" } },
   },
 });
 
 export default function Home() {
-  const [state, send] = useMachine(toggleMachine);
-  const [data, setData] = useState([]);
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Nazwa przedsiębiorstwa",
-        accessor: "company_name", // accessor is the "key" in the data
-      },
+  const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: true });
 
-      {
-        Header: "Jurysdykcja",
-        accessor: "jurisdiction",
-      },
-      {
-        Header: "Data zgłoszenia",
-        accessor: "report_date",
-      },
-      {
-        Header: "Odnośnik do zgłoszenia",
-        accessor: "report_url",
-      },
-    ],
+  const [state, send] = useMachine(moneyMachine);
+  const [data, setData] = useState(null);
+  const [initialState, setInitialState] = useState(null);
 
-    []
-  );
-
-  const tableInstance = useTable({ columns, data });
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
-
-  return (
-    <Box display="grid" gridTemplateColumns="1fr 70%" padding={4}>
-      <Box marginTop={8}>
-        <Head>
-          <title>threat-alert</title>
-        </Head>
-
-        <Heading>Find bad guys</Heading>
-        <Text>
-          Fill the blanks below to find freshiest Bitcoin scammers, Insurance scammers or any other
-          type of a scammer you want!
-        </Text>
-
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validate={(values) => {
-            const errors = {};
-
-            // if (!values.email) {
-            //   errors.email = "Required";
-            // } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-            //   errors.email = "Invalid email address";
-            // }
-
-            return errors;
-          }}
-          onSubmit={(values) => {
-            send({ type: "SUBMIT" });
-            wretch("/api/find")
-              .post(values)
-              .json()
-              .then((response) => {
-                setData(toPairs(response.results).map(([_v, v]) => v));
-                send({ type: "RESOLVED" });
-              })
-              .catch((error) => send({ type: "REJECT" }));
-          }}
-        >
-          <Form>
-            <Field
-              as={Input}
-              m={2}
-              // type="email"
-              name="email"
-            />
-
-            <ErrorMessage name="email" component="div" />
-
-            <Field m={2} as={Input} type="password" name="password" />
-
-            <ErrorMessage name="password" component="div" />
-
-            <Button
-              isFullWidth
-              m={2}
-              type="submit"
-              isLoading={state.matches("loading")}
-              disabled={state.matches("loading")}
-            >
-              {state.matches("loading") ? "Loading..." : "Submit"}
-            </Button>
-          </Form>
-        </Formik>
-      </Box>
-
-      <Box as="main" p={8}>
-        <Box as="table" {...getTableProps()} width="100%">
-          <Box as="thead" borderBottom="1px solid rgba(0, 0, 0, 0.25)" mb={2} textAlign="left">
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                ))}
-              </tr>
-            ))}
+  switch (state.value) {
+    case "files":
+    case "keywords":
+    case "query":
+      return <FiletypePicker state={state} send={send} setInitialState={setInitialState} />;
+    case "display":
+    case "error":
+    case "loading":
+      return (
+        <>
+          <Box
+            width="100%"
+            position="sticky"
+            top={0}
+            backgroundColor="white"
+            display="flex"
+            alignItems="center"
+            p={4}
+            borderBottom="1px solid rgba(0, 0, 0, 0.25)"
+          >
+            <IconButton size="sm" variant="outline" onClick={onOpen} icon={<HamburgerIcon />} />
+            <Heading ml={4} mb={0} as="h1" size="lg">
+              cośtam.app
+            </Heading>
           </Box>
+          <Drawer size="lg" isOpen={isOpen} placement="left" onClose={onClose}>
+            <DrawerOverlay>
+              <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerHeader>Filters</DrawerHeader>
 
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </Box>
-      </Box>
-    </Box>
-  );
+                <DrawerBody>
+                  <FilterForm
+                    onClose={onClose}
+                    initialState={initialState}
+                    send={send}
+                    setData={setData}
+                    state={state}
+                  />
+                </DrawerBody>
+              </DrawerContent>
+            </DrawerOverlay>
+          </Drawer>
+          {state.value === "loading" ? (
+            <Box
+              height="100%"
+              width="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Box width="200px" minHeight="200px">
+                <Progress size="lg" isIndeterminate />
+              </Box>
+            </Box>
+          ) : data ? (
+            <>
+              {state.value === "error" ? (
+                <Alert status="error">
+                  <AlertIcon />
+                  <AlertTitle mr={2}>Your browser is outdated!</AlertTitle>
+                  <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+                  <Button onClick={() => send("CLOSE")} position="absolute" right="8px" top="8px">
+                    X
+                  </Button>
+                </Alert>
+              ) : null}
+              <ResultsTable data={data} />
+            </>
+          ) : null}
+        </>
+      );
+    default:
+      return null;
+  }
 }
