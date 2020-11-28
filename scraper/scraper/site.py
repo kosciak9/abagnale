@@ -39,7 +39,9 @@ class Site:
     
 
     def __hash__(self):
-        return hash(self.html)
+        # using only html would cause sites with the same html to be de-duplicated
+        # then, when other sites link to them, they would not be found in the database
+        return hash(self.url)
     
 
     def __repr__(self):
