@@ -1,14 +1,20 @@
 import re
+from urllib.parse import urlparse
+
+
+def domain(url):
+    '''Turn http://abc.xyz/cool?q=10 into abc.xyz'''
+    return urlparse(url).netloc
 
 
 def base_url(url):
-    '''Turns http://abc.xyz/ into abc.xyz'''
-    proto_index = url.find('://')
-    if proto_index >= 0:
-        url = url[proto_index + 3:]
-    if url.endswith('/'):
-        url = url[:-1]
-    return url
+    '''Turn http://abc.xyz/cool?q=10 into abc.xyz/cool'''
+    parsed = urlparse(url)
+    domain = parsed.netloc
+    path = parsed.path
+    if path.endswith('/'):
+        path = path[:-1]
+    return domain + path
 
 
 def find_urls(text):

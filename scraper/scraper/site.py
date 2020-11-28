@@ -1,14 +1,13 @@
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
-from scraper.url import base_url, find_urls
+from scraper.url import domain, base_url, find_urls
 
 
 class Site:
     def __init__(self, url, html):
         self.url = url
         self.html = html
-        self.soup = BeautifulSoup(html, 'lxml')
     
 
     @classmethod
@@ -27,7 +26,7 @@ class Site:
 
     @property
     def links(self):
-        '''Returns a list of URLs that this website links to'''
+        '''A list of URLs that this website links to'''
         links = [
             urljoin(self.url, link['href'])
             for link in self.soup.body.find_all('a', href=True)
@@ -38,6 +37,21 @@ class Site:
             base_url(url): url
             for url in look_like_urls + links
         }.values())
+    
+
+    @property
+    def external_links(self):
+        '''A list of URLs outside this domain'''
+        return [
+            link
+            for link in self.links
+            if domain(link) != domain(self.url)
+        ]
+    
+
+    @property
+    def soup(self):
+        return BeautifulSoup(self.html, 'lxml')
     
 
     def __hash__(self):
