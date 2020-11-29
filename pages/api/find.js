@@ -36,19 +36,19 @@ export default async (req, res) => {
     entitiesFile
     // JSON.parse(readFileSync(entitiesPath).toString())
   ).map(([title, entity]) => ({ ...entity, title }));
-  const filteredEntities = entities.map(
-    (entity) => ({
+  const filteredEntities = entities
+    .map((entity) => ({
       ...entity,
-      frequency_in_search: entity.source_urls.reduce((result, url) => result + filteredUrls.includes(url) ? 1 : 0, 0)
-    })
-  ).filter((entity) =>
-    (entity.frequency_in_search > 0)
-  ).map(
-    (entity) => ({
+      frequency_in_search: entity.source_urls.reduce(
+        (result, url) => (result + filteredUrls.includes(url) ? 1 : 0),
+        0
+      ),
+    }))
+    .filter((entity) => entity.frequency_in_search > 0)
+    .map((entity) => ({
       ...entity,
-      relative_frequency: entity.frequency_in_search / entity.frequency
-    })
-  );
+      relative_frequency: Math.round((entity.frequency_in_search / entity.frequency) * 100),
+    }));
   console.log(
     `filters reduced number of entities from ${entities.length} to ${filteredEntities.length}`
   );

@@ -43,7 +43,7 @@ const EntitiesTable = ({ data = [] }) => {
       </Box>
       <Accordion allowToggle>
         {data
-          .sort((a, b) => a.frequency < b.frequency)
+          .sort((a, b) => a.relative_frequency < b.relative_frequency)
           .slice(10 * currentPage, 10 * (currentPage + 1))
           .map((row) => (
             <AccordionItem key={row.title}>
@@ -51,11 +51,15 @@ const EntitiesTable = ({ data = [] }) => {
                 <Box display="flex" alignItems="center" flex="1" textAlign="left">
                   <Tag
                     colorScheme={
-                      row.frequency > 50 ? "red" : row.frequency > 25 ? "orange" : "gray"
+                      row.relative_frequency > 50
+                        ? "red"
+                        : row.relative_frequency > 25
+                        ? "orange"
+                        : "gray"
                     }
                   >
-                    {row.frequency}
-                  </Tag>{" "}
+                    {row.relative_frequency}
+                  </Tag>
                   <Text ml={2}>{row.title}</Text>
                 </Box>
                 <AccordionIcon />
