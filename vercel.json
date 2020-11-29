@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/find.py": {
+    "pages/api/find.js": {
       "includeFiles": "scraper/data/outputs/*"
     }
   }

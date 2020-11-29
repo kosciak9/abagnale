@@ -11,9 +11,9 @@ import {
   Switch,
   Heading,
 } from "@chakra-ui/react";
-import { toPairs } from "lodash";
 import { AddIcon, CloseIcon, DeleteIcon, SearchIcon } from "@chakra-ui/icons";
 import { Fragment } from "react";
+import { Persist } from "formik-persist";
 
 const KeywordField = ({ name, remove }) => (
   <Box my={2} display="flex" justifyContent="space-between">
@@ -33,7 +33,7 @@ const FilterForm = ({ send, setData, state, initialValues, onClose }) => (
         .post(values)
         .json()
         .then((response) => {
-          setData(toPairs(response.results).map(([_v, v]) => v));
+          setData(response);
           send({ type: "RESOLVED" });
           console.log(onClose);
           onClose();
@@ -115,6 +115,7 @@ const FilterForm = ({ send, setData, state, initialValues, onClose }) => (
             </>
           )}
         </Button>
+        <Persist name="filter-form" />
       </Box>
     )}
   </Formik>

@@ -6,24 +6,15 @@ const ResultsTable = ({ data = [] }) => {
   const columns = useMemo(
     () => [
       {
-        Header: "Nazwa przedsiębiorstwa",
-        accessor: "company_name", // accessor is the "key" in the data
+        Header: "Nazwa przedsięwzięcia",
+        accessor: "title", // accessor is the "key" in the data
       },
 
       {
-        Header: "Jurysdykcja",
-        accessor: "jurisdiction",
-      },
-      {
-        Header: "Data zgłoszenia",
-        accessor: "report_date",
-      },
-      {
-        Header: "Odnośnik do zgłoszenia",
-        accessor: "report_url",
+        Header: "Adres URL",
+        accessor: "url",
       },
     ],
-
     []
   );
 

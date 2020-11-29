@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@chakra-ui/accordion": "^1.0.1",
     "@chakra-ui/icons": "^1.0.1",
     "@chakra-ui/react": "^1.0.1",
     "@emotion/react": "^11.1.1",
@@ -17,11 +18,14 @@
     "csv-parse": "^4.14.1",
     "faker": "^5.1.0",
     "formik": "^2.2.5",
+    "formik-persist": "^1.1.0",
     "framer-motion": "^2.9.4",
     "lodash": "^4.17.20",
     "next": "10.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-dropzone": "^11.2.4",
+    "react-sigma": "^1.2.35",
     "react-table": "^7.6.2",
     "wretch": "^1.7.4"
   }

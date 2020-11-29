@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FilterForm } from "../components/FilterForm";
 import { FiletypePicker } from "../components/FiletypePicker";
 import { ResultsTable } from "../components/ResultsTable";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
@@ -25,15 +26,21 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowLeftIcon, ArrowRightIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon } from "@chakra-ui/icons";
+import { EntitiesTable } from "../components/EntitiesTable";
+
+import dynamic from "next/dynamic";
+
+const DynamicGraphWithNoSSR = dynamic(() => import("../components/EntitiesGraph"), {
+  ssr: false,
+});
 
 const moneyMachine = createMachine({
   id: "moneyMachine",
   initial: "files",
   states: {
-    files: { on: { KEYWORDS: "keywords", QUERY: "query", FROM_SCRATCH: "display" } },
+    files: { on: { KEYWORDS: "keywords", FROM_SCRATCH: "display" } },
     keywords: { on: { PARSED: "display", ERROR: "error" } },
-    query: { on: { PARSED: "display", ERROR: "error" } },
     display: { on: { SUBMIT: "loading", IMPORT: "files" } },
     loading: { on: { RESOLVED: "display", REJECTED: "error" } },
     error: { on: { CLOSE: "display" } },
@@ -45,13 +52,13 @@ export default function Home() {
 
   const [state, send] = useMachine(moneyMachine);
   const [data, setData] = useState(null);
-  const [initialState, setInitialState] = useState(null);
+  const [initialValues, setInitialValues] = useState(null);
 
   switch (state.value) {
     case "files":
     case "keywords":
     case "query":
-      return <FiletypePicker state={state} send={send} setInitialState={setInitialState} />;
+      return <FiletypePicker state={state} send={send} setInitialValues={setInitialValues} />;
     case "display":
     case "error":
     case "loading":
@@ -81,7 +88,7 @@ export default function Home() {
                 <DrawerBody>
                   <FilterForm
                     onClose={onClose}
-                    initialState={initialState}
+                    initialValues={initialValues}
                     send={send}
                     setData={setData}
                     state={state}
@@ -114,7 +121,25 @@ export default function Home() {
                   </Button>
                 </Alert>
               ) : null}
-              <ResultsTable data={data} />
+              <Tabs isLazy>
+                <TabList>
+                  <Tab>Lista wyników</Tab>
+                  <Tab>Lista powiązań</Tab>
+                  <Tab>Graf powiązań</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <ResultsTable data={data.results} />
+                  </TabPanel>
+                  <TabPanel>
+                    <EntitiesTable data={data.graph} />
+                  </TabPanel>
+                  <TabPanel>
+                    <DynamicGraphWithNoSSR data={data.graph} />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             </>
           ) : null}
         </>
