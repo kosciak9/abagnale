@@ -6,7 +6,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider>
       <Head>
-        <title>threat-alert</title>
+        <title>abagnale</title>
       </Head>
       <Component {...pageProps} />
     </ChakraProvider>

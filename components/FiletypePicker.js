@@ -8,7 +8,6 @@ const FiletypePicker = ({ state, send, setInitialValues }) => {
     onDrop: (acceptedFiles) => {
       try {
         acceptedFiles[0].text().then((text) => {
-          console.log(text);
           setInitialValues({
             groups: [text.split("\n")],
           });

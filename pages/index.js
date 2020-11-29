@@ -31,9 +31,9 @@ import { EntitiesTable } from "../components/EntitiesTable";
 
 import dynamic from "next/dynamic";
 
-const DynamicGraphWithNoSSR = dynamic(() => import("../components/EntitiesGraph"), {
-  ssr: false,
-});
+// const DynamicGraphWithNoSSR = dynamic(() => import("../components/EntitiesGraph"), {
+//   ssr: false,
+// });
 
 const moneyMachine = createMachine({
   id: "moneyMachine",
@@ -76,7 +76,7 @@ export default function Home() {
           >
             <IconButton size="sm" variant="outline" onClick={onOpen} icon={<HamburgerIcon />} />
             <Heading ml={4} mb={0} as="h1" size="lg">
-              cośtam.app
+              abagnale
             </Heading>
           </Box>
           <Drawer size="lg" isOpen={isOpen} placement="left" onClose={onClose}>
@@ -125,7 +125,7 @@ export default function Home() {
                 <TabList>
                   <Tab>Lista wyników</Tab>
                   <Tab>Lista powiązań</Tab>
-                  <Tab>Graf powiązań</Tab>
+                  {/* <Tab>Graf powiązań</Tab> */}
                 </TabList>
 
                 <TabPanels>
@@ -135,9 +135,9 @@ export default function Home() {
                   <TabPanel>
                     <EntitiesTable data={data.graph} />
                   </TabPanel>
-                  <TabPanel>
+                  {/* <TabPanel>
                     <DynamicGraphWithNoSSR data={data.graph} />
-                  </TabPanel>
+                  </TabPanel> */}
                 </TabPanels>
               </Tabs>
             </>

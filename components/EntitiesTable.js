@@ -1,5 +1,5 @@
-import { Box, Button, List, ListItem } from "@chakra-ui/react";
-import { mapValues, values } from "lodash";
+import { Box, Button, List, ListItem, Tag } from "@chakra-ui/react";
+import { toPairs, mapValues, values } from "lodash";
 import {
   Accordion,
   AccordionItem,
@@ -32,27 +32,48 @@ const EntitiesTable = ({ data = [] }) => {
         />
       </Box>
       <Accordion allowToggle>
-        {data.slice(10 * currentPage, 10 * (currentPage + 1)).map((row) => (
-          <AccordionItem key={row.title}>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                {row.title} - {row.frequency}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              <List>
-                {values(
-                  mapValues(row.friends, (frequency, friend) => (
-                    <ListItem>
-                      {friend} - {frequency}
-                    </ListItem>
-                  ))
-                )}
-              </List>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
+        {data
+          .sort((a, b) => a.frequency < b.frequency)
+          .slice(10 * currentPage, 10 * (currentPage + 1))
+          .map((row) => (
+            <AccordionItem key={row.title}>
+              <AccordionButton>
+                <Box display="flex" alignItems="center" flex="1" textAlign="left">
+                  <Tag
+                    colorScheme={
+                      row.frequency > 50 ? "red" : row.frequency > 25 ? "orange" : "gray"
+                    }
+                  >
+                    {row.frequency}
+                  </Tag>{" "}
+                  <Text ml={2}>{row.title}</Text>
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <Box as="table" width="80%" marginLeft="10%">
+                  <Box as="thead" borderBottom="1px solid rgba(0, 0, 0, 0.25)">
+                    <Box as="tr">
+                      <Box as="td">identyfikator</Box>
+                      <Box as="td">siła powiązania</Box>
+                    </Box>
+                  </Box>
+                  <Box as="tbody">
+                    {toPairs(row.friends)
+                      .sort(([, frequencyA], [, frequencyB]) => frequencyA < frequencyB)
+                      .map(([friend, frequency]) => (
+                        <Box as="tr" key={friend}>
+                          <td>{friend}</td>
+                          <Box as="td" textAlign="right">
+                            {Math.round(frequency * 100)}
+                          </Box>
+                        </Box>
+                      ))}
+                  </Box>
+                </Box>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
       </Accordion>
     </>
   );
