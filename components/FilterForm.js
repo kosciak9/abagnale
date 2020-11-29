@@ -26,7 +26,7 @@ const KeywordField = ({ name, remove }) => (
 
 const FilterForm = ({ send, setData, state, initialValues, onClose }) => (
   <Formik
-    initialValues={{ groups: [], ...initialValues, polishOnly: true }}
+    initialValues={{ groups: [], ...initialValues, polishOnly: false }}
     onSubmit={(values) => {
       send({ type: "SUBMIT" });
       wretch("/api/find")
@@ -115,7 +115,7 @@ const FilterForm = ({ send, setData, state, initialValues, onClose }) => (
             </>
           )}
         </Button>
-        <Persist name="filter-form" />
+        {initialValues ? null : <Persist name="filter-form" />}
       </Box>
     )}
   </Formik>
