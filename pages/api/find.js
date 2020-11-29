@@ -44,5 +44,5 @@ export default async (req, res) => {
   );
 
   res.statusCode = 200;
-  res.json({ results: keywordFilteredWeb, graph: filteredEntities });
+  res.json({ results: keywordFilteredWeb.slice(0, 200), graph: filteredEntities.slice(0, 200) });
 };
