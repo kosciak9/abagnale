@@ -1,5 +1,5 @@
 import { useTable } from "react-table";
-import { Box } from "@chakra-ui/react";
+import { Box, Link } from "@chakra-ui/react";
 import { useMemo } from "react";
 
 const ResultsTable = ({ data = [] }) => {
@@ -25,28 +25,21 @@ const ResultsTable = ({ data = [] }) => {
     <Box as="main" p={8}>
       <Box as="table" {...getTableProps()} width="100%">
         <Box as="thead" borderBottom="1px solid rgba(0, 0, 0, 0.25)" mb={2} textAlign="left">
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-              ))}
-            </tr>
+          <tr>
+            <th>Nazwa przedsięwzięcia</th>
+            <th>Adres URL</th>
+          </tr>
+        </Box>
+        <Box as="tbody">
+          {data.map((row) => (
+            <Box as="tr" key={row.url}>
+              <td>{row.title}</td>
+              <td>
+                <Link href={row.url}>{row.url}</Link>
+              </td>
+            </Box>
           ))}
         </Box>
-
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
       </Box>
     </Box>
   );

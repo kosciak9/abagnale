@@ -1,4 +1,4 @@
-import { Box, Button, List, ListItem, Tag } from "@chakra-ui/react";
+import { Box, Button, Link, List, ListItem, Tag } from "@chakra-ui/react";
 import { toPairs, mapValues, values } from "lodash";
 import {
   Accordion,
@@ -11,6 +11,16 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+
+const urlRegex = (probUrl) => {
+  try {
+    new URL(probUrl);
+    return true;
+  } catch (_) {
+    console.error(_);
+    return false;
+  }
+};
 
 const EntitiesTable = ({ data = [] }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -63,7 +73,9 @@ const EntitiesTable = ({ data = [] }) => {
                       .sort(([, frequencyA], [, frequencyB]) => frequencyA < frequencyB)
                       .map(([friend, frequency]) => (
                         <Box as="tr" key={friend}>
-                          <td>{friend}</td>
+                          <td>
+                            <Link href={"http://" + friend}>{friend}</Link>
+                          </td>
                           <Box as="td" textAlign="right">
                             {Math.round(frequency * 100)}
                           </Box>
