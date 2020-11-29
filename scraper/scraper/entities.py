@@ -6,16 +6,21 @@ from scraper.utils import get_lang
 
 
 # TODO: should extract entity objects, so that case/url details become unimportant
-def extract_entities(site):
+def extract_entities(site, kept_domains=None):
+    links = [domain(link) for link in site.links]
+    if kept_domains is not None:
+        links = [link for link in links if link in kept_domains]
     unfiltered = set(
         extract_emails(site)
         # + extract_nlp(site)
         + [domain(site.url)]
         + ([site.title] if site.title is not None else [])
+        + links
     )
     return list(set(
         entity.lower()
         for entity in unfiltered
+        if 2 <= len(entity) < 64
         if not any(symbol in entity for symbol in ['\t', '\n', '\u200b'])
         if entity.count(' ') <= 2
     ))

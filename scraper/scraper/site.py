@@ -62,10 +62,9 @@ class Site:
         ]
     
 
-    @property
-    def entities(self):
+    def entities(self, kept_domains=None):
         '''The set of entities related to the site'''
-        return extract_entities(self)
+        return extract_entities(self, kept_domains=kept_domains)
     
 
     @property
