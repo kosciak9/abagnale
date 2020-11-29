@@ -9,7 +9,7 @@ from scraper.utils import get_lang
 def extract_entities(site):
     unfiltered = set(
         extract_emails(site)
-        + extract_nlp(site)
+        # + extract_nlp(site)
         + [domain(site.url)]
         + ([site.title] if site.title is not None else [])
     )
