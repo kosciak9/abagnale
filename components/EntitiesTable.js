@@ -1,4 +1,4 @@
-import { Box, Button, Link, List, ListItem, Tag } from "@chakra-ui/react";
+import { Box, Button, Link, List, ListItem, Tag, Tooltip } from "@chakra-ui/react";
 import { toPairs, mapValues, values } from "lodash";
 import {
   Accordion,
@@ -49,17 +49,30 @@ const EntitiesTable = ({ data = [] }) => {
             <AccordionItem key={row.title}>
               <AccordionButton>
                 <Box display="flex" alignItems="center" flex="1" textAlign="left">
-                  <Tag
-                    colorScheme={
+                  <Tooltip
+                    label={`To powiązanie jest ${
                       row.relative_frequency > 50
-                        ? "red"
+                        ? "silne"
                         : row.relative_frequency > 25
-                        ? "orange"
-                        : "gray"
-                    }
+                        ? "średniej siły"
+                        : "słabe"
+                    } - ${
+                      row.relative_frequency
+                    }% wystąpień tego identyfikatora występuje na stronach w wyszukiwaniu.`}
+                    hasArrow
                   >
-                    {row.relative_frequency}
-                  </Tag>
+                    <Tag
+                      colorScheme={
+                        row.relative_frequency > 50
+                          ? "red"
+                          : row.relative_frequency > 25
+                          ? "orange"
+                          : "gray"
+                      }
+                    >
+                      {row.relative_frequency}
+                    </Tag>
+                  </Tooltip>
                   <Text ml={2}>{row.title}</Text>
                 </Box>
                 <AccordionIcon />
@@ -75,14 +88,27 @@ const EntitiesTable = ({ data = [] }) => {
                   <Box as="tbody">
                     {toPairs(row.friends)
                       .sort(([, frequencyA], [, frequencyB]) => frequencyA < frequencyB)
-                      .map(([friend, frequency]) => (
+                      .map(([friend, connectionStrength]) => (
                         <Box as="tr" key={friend}>
                           <td>
                             <Link href={"http://" + friend}>{friend}</Link>
                           </td>
-                          <Box as="td" textAlign="right">
-                            {Math.round(frequency * 100)}
-                          </Box>
+                          <Tooltip
+                            label={`To powiązanie jest ${
+                              Math.round(connectionStrength * 100) > 50
+                                ? "silne"
+                                : Math.round(connectionStrength * 100) > 25
+                                ? "średniej siły"
+                                : "słabe"
+                            } - identyfikatory występują obok siebie w ${Math.round(
+                              connectionStrength * 100
+                            )}% stron, na których występuje choć jeden z nich.`}
+                            hasArrow
+                          >
+                            <Box as="td" textAlign="right">
+                              {Math.round(connectionStrength * 100)}
+                            </Box>
+                          </Tooltip>
                         </Box>
                       ))}
                   </Box>
