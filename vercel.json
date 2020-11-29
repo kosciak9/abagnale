@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/find.py": {
-      "includeFiles": "scraper/data/outputs/**.gz"
+      "includeFiles": "scraper/data/outputs/*"
     }
   }
 }
