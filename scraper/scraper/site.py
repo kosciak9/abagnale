@@ -103,6 +103,10 @@ class Site:
         )
     
 
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+    
+
     def __hash__(self):
         # using only html would cause sites with the same html to be de-duplicated
         # then, when other sites link to them, they would not be found in the database
