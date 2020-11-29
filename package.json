@@ -27,6 +27,7 @@
     "react-dropzone": "^11.2.4",
     "react-sigma": "^1.2.35",
     "react-table": "^7.6.2",
+    "use-persisted-state": "^0.3.3",
     "wretch": "^1.7.4"
   }
 }

@@ -12,18 +12,9 @@ import {
 import { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 
-const urlRegex = (probUrl) => {
-  try {
-    new URL(probUrl);
-    return true;
-  } catch (_) {
-    console.error(_);
-    return false;
-  }
-};
-
 const EntitiesTable = ({ data = [] }) => {
   const [currentPage, setCurrentPage] = useState(0);
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center" mt={2} mb={6}>

@@ -1,6 +1,10 @@
 import { useTable } from "react-table";
-import { Box, Link } from "@chakra-ui/react";
+import { Box, Link, Tag } from "@chakra-ui/react";
 import { useMemo } from "react";
+import createPersistedState from "use-persisted-state";
+import { useEffect } from "react";
+
+const useSeenState = createPersistedState("seen");
 
 const ResultsTable = ({ data = [] }) => {
   const columns = useMemo(
@@ -17,6 +21,10 @@ const ResultsTable = ({ data = [] }) => {
     ],
     []
   );
+  const [unseen, setSeen] = useSeenState(true);
+  useEffect(() => {
+    return () => setSeen(false);
+  }, []);
 
   const tableInstance = useTable({ columns, data });
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
@@ -31,9 +39,11 @@ const ResultsTable = ({ data = [] }) => {
           </tr>
         </Box>
         <Box as="tbody">
-          {data.map((row) => (
+          {data.map((row, index) => (
             <Box as="tr" key={row.url}>
-              <td>{row.title}</td>
+              <td>
+                {row.title} {unseen ? <Tag colorScheme="green">Nowe</Tag> : null}
+              </td>
               <td>
                 <Link href={row.url}>{row.url}</Link>
               </td>
