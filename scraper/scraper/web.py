@@ -12,23 +12,22 @@ class Web:
     
 
     @classmethod
-    def from_url(cls, url, depth=1, parallel=True):
+    def from_url(cls, url, max_links=256, depth=1, parallel=True):
         '''Follow the URL, all URLs found on the URL, etc - until the depth limit is reached'''
-        if depth == 0:
-            return cls(sites=[])
         top_level_site = Site.from_url(url, ignore_errors=True)
         if top_level_site is None:
             return cls(sites=[])
         
         links = top_level_site.links if depth > 1 else []
+        links = links[:max_links]
         def recurse(link):
-            return cls.from_url(url=link, depth=depth - 1, parallel=parallel)
+            return cls.from_url(url=link, max_links=max_links, depth=depth - 1, parallel=False)
         
         return cls.merge(
             cls(sites=[top_level_site]),
             *(
                 parallel_map(recurse, links)
-                if parallel and depth == 2 else
+                if parallel else
                 [recurse(link) for link in links]
             )
         )
