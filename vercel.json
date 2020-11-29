@@ -1,7 +1,7 @@
 {
   "functions": {
     "pages/api/find.js": {
-      "includeFiles": "scraper/data/outputs/*"
+      "includeFiles": "scraper/data/outputs/*.json"
     }
   }
 }

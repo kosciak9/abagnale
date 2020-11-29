@@ -6,8 +6,7 @@ export default async (req, res) => {
   const filters = req.body;
   console.log(filters);
 
-  const entitiesPath = join(".", "entities.json");
-  const webPath = join(".", "web.json");
+  const webPath = join("pages", "api", "web.json");
 
   const web = JSON.parse(readFileSync(webPath).toString());
   const languageFilteredWeb = filters.polishOnly
@@ -29,6 +28,7 @@ export default async (req, res) => {
   );
   const filteredUrls = keywordFilteredWeb.map((website) => website.url);
 
+  const entitiesPath = join("pages", "api", "entities.json");
   const entities = toPairs(
     JSON.parse(readFileSync(entitiesPath).toString())
   ).map(([title, entity]) => ({ ...entity, title }));
