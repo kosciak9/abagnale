@@ -1,6 +1,7 @@
 from functools import reduce
 import gzip
 import json
+from tqdm.auto import tqdm
 from scraper.site import Site
 from scraper.url import base_url
 from scraper.parallel import parallel_map
@@ -64,6 +65,14 @@ class Web:
     def to_json(self):
         # sort by hash to guarantee that the same web will always give the same json
         return [site.to_json() for site in sorted(self.sites, key=hash)]
+    
+
+    def to_cache(self, loading=True):
+        '''Irreversibly convert to frontend-friendly format'''
+        iterable = sorted(self.sites, key=hash)
+        if loading:
+            iterable = tqdm(iterable)
+        return [site.to_cache() for site in iterable]
     
 
     def __len__(self):

@@ -103,6 +103,17 @@ class Site:
         )
     
 
+    def to_cache(self):
+        '''Irreversibly convert to frontend-friendly format'''
+        return dict(
+            url=self.url,
+            title=self.title,
+            text=self.text,
+            links=self.links,
+            lang=self.lang,
+        )
+    
+
     def __eq__(self, other):
         return hash(self) == hash(other)
     
