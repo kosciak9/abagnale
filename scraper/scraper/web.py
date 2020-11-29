@@ -5,11 +5,12 @@ from tqdm.auto import tqdm
 from scraper.site import Site
 from scraper.url import base_url
 from scraper.parallel import parallel_map
+from scraper.utils import deduplicate
 
 
 class Web:
     def __init__(self, sites):
-        self.sites = frozenset(sites)
+        self.sites = deduplicate(sites)
     
 
     @classmethod

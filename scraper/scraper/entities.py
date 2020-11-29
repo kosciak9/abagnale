@@ -2,15 +2,22 @@ import re
 import spacy
 from tqdm.auto import tqdm
 from scraper.url import domain
+from scraper.utils import get_lang
 
 
 # TODO: should extract entity objects, so that case/url details become unimportant
 def extract_entities(site):
-    return list(set(
+    unfiltered = set(
         extract_emails(site)
         + extract_nlp(site)
         + [domain(site.url)]
         + ([site.title] if site.title is not None else [])
+    )
+    return list(set(
+        entity.lower()
+        for entity in unfiltered
+        if not any(symbol in entity for symbol in ['\t', '\n', '\u200b'])
+        if entity.count(' ') <= 2
     ))
 
 
@@ -28,7 +35,7 @@ def extract_nlp(site):
         ent.text.strip()
         for ent in nlp_models[lang](site.text).ents
         if ent.label_ in nlp_label_types[lang]
-        if not any(symbol in ent.text for symbol in ['\t', '\n'])
+        if get_lang(ent.text) in nlp_models
     ]
 
 
@@ -56,9 +63,9 @@ def get_nlp_models():
 
 
 nlp_label_types = {
-    'pl': {'persName', 'orgName', 'geogName', 'placeName'},
+    'pl': {'persName', 'orgName'},
     **{
-        code: {'PERSON', 'ORG', 'LOC', 'GPE'}
+        code: {'PERSON', 'ORG'}
         for code in [
             'en', 'nl', 'fr', 'de', 'it', 'es'
         ]

@@ -1,9 +1,9 @@
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
-import langdetect
 from scraper.entities import extract_entities
 from scraper.url import domain, base_url, find_urls
+from scraper.utils import get_lang
 
 
 class Site:
@@ -13,9 +13,9 @@ class Site:
     
 
     @classmethod
-    def from_url(cls, url, ignore_errors=False):
+    def from_url(cls, url, timeout=1, ignore_errors=False):
         try:
-            html = requests.get(url).text
+            html = requests.get(url, timeout=timeout).text
         except Exception as exception:
             if ignore_errors:
                 return None
@@ -24,6 +24,15 @@ class Site:
             url=url,
             html=html
         )
+    
+
+    @classmethod
+    def from_file(cls, path):
+        with open(path, 'r') as file:
+            return cls(
+                url='file://' + str(path),
+                html=file.read()
+            )
 
 
     @property
@@ -77,10 +86,7 @@ class Site:
 
     @property
     def lang(self):
-        try:
-            return langdetect.detect(self.text)
-        except:
-            return None
+        return get_lang(self.text)
     
 
     @property
