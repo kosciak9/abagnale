@@ -2,13 +2,16 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { some, toPairs, every, filter } from "lodash";
 
+const entitiesFile = require("./entities");
+const webFile = require("./web");
+
 export default async (req, res) => {
   const filters = req.body;
   console.log(filters);
 
   const webPath = join("pages", "api", "web.json");
 
-  const web = JSON.parse(readFileSync(webPath).toString());
+  const web = webFile; // JSON.parse(readFileSync(webPath).toString());
   const languageFilteredWeb = filters.polishOnly
     ? web.filter((website) => website.lang === "pl")
     : web;
@@ -30,7 +33,8 @@ export default async (req, res) => {
 
   const entitiesPath = join("pages", "api", "entities.json");
   const entities = toPairs(
-    JSON.parse(readFileSync(entitiesPath).toString())
+    entitiesFile
+    // JSON.parse(readFileSync(entitiesPath).toString())
   ).map(([title, entity]) => ({ ...entity, title }));
   const filteredEntities = entities.filter((entity) =>
     some(entity.source_urls, (url) => filteredUrls.includes(url))
