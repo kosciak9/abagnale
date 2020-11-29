@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FilterForm } from "../components/FilterForm";
 import { FiletypePicker } from "../components/FiletypePicker";
 import { ResultsTable } from "../components/ResultsTable";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
@@ -109,7 +109,7 @@ export default function Home() {
                 <Progress size="lg" isIndeterminate />
               </Box>
             </Box>
-          ) : data ? (
+          ) : data && data.results.length > 0 ? (
             <>
               {state.value === "error" ? (
                 <Alert status="error">
@@ -141,7 +141,11 @@ export default function Home() {
                 </TabPanels>
               </Tabs>
             </>
-          ) : null}
+          ) : (
+            <Text textAlign="center" p={4}>
+              Brak wyników! Zmień kryteria wyszukiwania :)
+            </Text>
+          )}
         </>
       );
     default:
