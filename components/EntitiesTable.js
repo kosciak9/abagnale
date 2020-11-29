@@ -78,40 +78,40 @@ const EntitiesTable = ({ data = [] }) => {
                 <AccordionIcon />
               </AccordionButton>
               <AccordionPanel pb={4}>
-                <Box as="table" width="80%" marginLeft="10%">
-                  <Box as="thead" borderBottom="1px solid rgba(0, 0, 0, 0.25)">
-                    <Box as="tr">
-                      <Box as="td">identyfikator</Box>
-                      <Box as="td">siła powiązania</Box>
-                    </Box>
-                  </Box>
-                  <Box as="tbody">
-                    {toPairs(row.friends)
-                      .sort(([, frequencyA], [, frequencyB]) => frequencyA < frequencyB)
-                      .map(([friend, connectionStrength]) => (
-                        <Box as="tr" key={friend}>
-                          <td>
-                            <Link href={"http://" + friend}>{friend}</Link>
-                          </td>
-                          <Tooltip
-                            label={`To powiązanie jest ${
+                <Box width="80%" marginLeft="10%">
+                  {toPairs(row.friends)
+                    .sort(([, frequencyA], [, frequencyB]) => frequencyA < frequencyB)
+                    .map(([friend, connectionStrength]) => (
+                      <Box key={friend} my={1}>
+                        <Tooltip
+                          label={`To powiązanie jest ${
+                            Math.round(connectionStrength * 100) > 50
+                              ? "silne"
+                              : Math.round(connectionStrength * 100) > 25
+                              ? "średniej siły"
+                              : "słabe"
+                          } - identyfikatory występują obok siebie w ${Math.round(
+                            connectionStrength * 100
+                          )}% stron, na których występuje choć jeden z nich.`}
+                          hasArrow
+                        >
+                          <Tag
+                            colorScheme={
                               Math.round(connectionStrength * 100) > 50
-                                ? "silne"
+                                ? "red"
                                 : Math.round(connectionStrength * 100) > 25
-                                ? "średniej siły"
-                                : "słabe"
-                            } - identyfikatory występują obok siebie w ${Math.round(
-                              connectionStrength * 100
-                            )}% stron, na których występuje choć jeden z nich.`}
-                            hasArrow
+                                ? "orange"
+                                : "gray"
+                            }
                           >
-                            <Box as="td" textAlign="right">
-                              {Math.round(connectionStrength * 100)}
-                            </Box>
-                          </Tooltip>
-                        </Box>
-                      ))}
-                  </Box>
+                            {Math.round(connectionStrength * 100)}
+                          </Tag>
+                        </Tooltip>
+                        <Link ml={2} href={"http://" + friend}>
+                          {friend}
+                        </Link>
+                      </Box>
+                    ))}
                 </Box>
               </AccordionPanel>
             </AccordionItem>
