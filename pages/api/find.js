@@ -16,7 +16,7 @@ export default async (req, res) => {
     ? web.filter((website) => website.lang === "pl")
     : web;
   console.log(
-    `language filter reduced websites count from ${web.length} to ${languageFilteredWeb.length}.`
+    `language filter reduced website count from ${web.length} to ${languageFilteredWeb.length}.`
   );
 
   const keywordFilteredWeb = languageFilteredWeb.filter((website) => {
@@ -27,7 +27,7 @@ export default async (req, res) => {
     });
   });
   console.log(
-    `keyword filter reduced websites count from ${languageFilteredWeb.length} to ${keywordFilteredWeb.length}.`
+    `keyword filter reduced website count from ${languageFilteredWeb.length} to ${keywordFilteredWeb.length}.`
   );
   const filteredUrls = keywordFilteredWeb.map((website) => website.url);
 
@@ -36,11 +36,21 @@ export default async (req, res) => {
     entitiesFile
     // JSON.parse(readFileSync(entitiesPath).toString())
   ).map(([title, entity]) => ({ ...entity, title }));
-  const filteredEntities = entities.filter((entity) =>
-    some(entity.source_urls, (url) => filteredUrls.includes(url))
+  const filteredEntities = entities.map(
+    (entity) => ({
+      ...entity,
+      frequency_in_search: entity.source_urls.reduce((result, url) => result + filteredUrls.includes(url) ? 1 : 0, 0)
+    })
+  ).filter((entity) =>
+    (entity.frequency_in_search > 0)
+  ).map(
+    (entity) => ({
+      ...entity,
+      relative_frequency: entity.frequency_in_search / entity.frequency
+    })
   );
   console.log(
-    `filters has reduced number of entities from ${entities.length} to ${filteredEntities.length}`
+    `filters reduced number of entities from ${entities.length} to ${filteredEntities.length}`
   );
 
   res.statusCode = 200;
