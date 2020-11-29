@@ -6,8 +6,8 @@ export default async (req, res) => {
   const filters = req.body;
   console.log(filters);
 
-  const entitiesPath = join(__dirname, "scraper", "outputs", "entities.json");
-  const webPath = join(__dirname, "scraper", "outputs", "web.json");
+  const entitiesPath = join(__dirname, "scraper", "data", "outputs", "entities.json");
+  const webPath = join(__dirname, "scraper", "data", "outputs", "web.json");
 
   const web = JSON.parse(readFileSync(webPath).toString());
   const languageFilteredWeb = filters.polishOnly
